@@ -179,15 +179,7 @@ class _AnimatedButtonState extends State<AnimatedButton>
                         width: 1.5,
                       )
                     : null,
-                boxShadow: widget.style == AnimatedButtonStyle.filled && isEnabled
-                    ? [
-                        BoxShadow(
-                          color: backgroundColor.withValues(alpha: 0.3),
-                          blurRadius: 8,
-                          offset: Offset(0, 4.h),
-                        ),
-                      ]
-                    : null,
+
               ),
               child: Stack(
                 children: [

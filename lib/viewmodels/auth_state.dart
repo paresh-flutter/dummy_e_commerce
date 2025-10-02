@@ -7,12 +7,15 @@ abstract class AuthState extends Equatable {
   List<Object?> get props => [];
 }
 
+/// Initial authentication state
 class AuthInitial extends AuthState {}
 
+/// Authentication is in progress (loading)
 class AuthLoading extends AuthState {}
 
+/// User is successfully authenticated
 class AuthAuthenticated extends AuthState {
-  final User user;
+  final UserModel user;
   
   const AuthAuthenticated(this.user);
   
@@ -20,8 +23,17 @@ class AuthAuthenticated extends AuthState {
   List<Object?> get props => [user];
 }
 
-class AuthUnauthenticated extends AuthState {}
+/// User is not authenticated
+class AuthUnauthenticated extends AuthState {
+  final String? message;
+  
+  const AuthUnauthenticated({this.message});
+  
+  @override
+  List<Object?> get props => [message];
+}
 
+/// Authentication error state
 class AuthError extends AuthState {
   final String message;
   
@@ -29,4 +41,14 @@ class AuthError extends AuthState {
   
   @override
   List<Object?> get props => [message];
+}
+
+/// Password reset email has been sent
+class AuthPasswordResetSent extends AuthState {
+  final String email;
+  
+  const AuthPasswordResetSent(this.email);
+  
+  @override
+  List<Object?> get props => [email];
 }

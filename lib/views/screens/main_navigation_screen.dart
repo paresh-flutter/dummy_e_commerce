@@ -1,16 +1,17 @@
+import 'package:dummy_e_commerce/views/screens/cart_screen.dart';
+import 'package:dummy_e_commerce/views/screens/profile_screen.dart';
+import 'package:dummy_e_commerce/views/screens/wishlist_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+
 import '../../viewmodels/cart_cubit.dart';
 import '../../viewmodels/wishlist_cubit.dart';
 import 'home_screen.dart';
-import 'cart_screen.dart';
-import 'wishlist_screen.dart';
-import 'profile_screen.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   final int initialIndex;
-  
+
   const MainNavigationScreen({
     super.key,
     this.initialIndex = 0,
@@ -56,21 +57,32 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(_getAppBarTitle()),
+        title: Text(_getAppBarTitle(), style: theme.textTheme.headlineSmall?.copyWith(
+          fontWeight: FontWeight.w600,
+          color: colorScheme.onSurface,
+        ),),
         actions: _getAppBarActions(),
         elevation: 0,
+        scrolledUnderElevation: 1,
+        backgroundColor: colorScheme.surface,
+        surfaceTintColor: colorScheme.surfaceTint,
       ),
-      body: PageView(
-        controller: _pageController,
-        onPageChanged: _onPageChanged,
-        children: const [
-          HomeScreen(showAppBar: false),
-          CartScreen(showAppBar: false),
-          WishlistScreen(showAppBar: false),
-          ProfileScreen(showAppBar: false),
-        ],
+      body: SafeArea(
+        child: PageView(
+          controller: _pageController,
+          onPageChanged: _onPageChanged,
+          children: const [
+            HomeScreen(showAppBar: false),
+            CartScreen(showAppBar: false),
+            WishlistScreen(showAppBar: false),
+            ProfileScreen(showAppBar: false),
+          ],
+        ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
@@ -159,47 +171,47 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     switch (_currentIndex) {
       case 0: // Home screen actions
         return [
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {
-              // Focus on search field in home screen
-              // This could be implemented with a focus node
-            },
-            tooltip: 'Search',
-          ),
+          // IconButton(
+          //   icon: const Icon(Icons.search),
+          //   onPressed: () {
+          //     // Focus on search field in home screen
+          //     // This could be implemented with a focus node
+          //   },
+          //   tooltip: 'Search',
+          // ),
         ];
       case 1: // Cart screen actions
         return [
-          IconButton(
-            icon: const Icon(Icons.delete_outline),
-            onPressed: () {
-              // Clear cart action
-              _showClearCartDialog();
-            },
-            tooltip: 'Clear Cart',
-          ),
+          // IconButton(
+          //   icon: const Icon(Icons.delete_outline),
+          //   onPressed: () {
+          //     // Clear cart action
+          //     _showClearCartDialog();
+          //   },
+          //   tooltip: 'Clear Cart',
+          // ),
         ];
       case 2: // Wishlist screen actions
         return [
-          IconButton(
-            icon: const Icon(Icons.clear_all),
-            onPressed: () {
-              // Clear wishlist action
-              _showClearWishlistDialog();
-            },
-            tooltip: 'Clear Wishlist',
-          ),
+          // IconButton(
+          //   icon: const Icon(Icons.clear_all),
+          //   onPressed: () {
+          //     // Clear wishlist action
+          //     _showClearWishlistDialog();
+          //   },
+          //   tooltip: 'Clear Wishlist',
+          // ),
         ];
       case 3: // Profile screen actions
         return [
-          IconButton(
-            icon: const Icon(Icons.settings_outlined),
-            onPressed: () {
-              // Navigate to settings
-              context.push('/settings');
-            },
-            tooltip: 'Settings',
-          ),
+          // IconButton(
+          //   icon: const Icon(Icons.settings_outlined),
+          //   onPressed: () {
+          //     // Navigate to settings
+          //     context.push('/settings');
+          //   },
+          //   tooltip: 'Settings',
+          // ),
         ];
       default:
         return null;

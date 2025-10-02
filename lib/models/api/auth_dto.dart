@@ -93,11 +93,12 @@ class UserDto {
   }
 
   // Convert to domain model
-  User toDomain() {
-    return User(
+  UserModel toDomain() {
+    return UserModel(
       id: id,
       name: name,
       email: email,
+      photoUrl: avatar,
     );
   }
 }

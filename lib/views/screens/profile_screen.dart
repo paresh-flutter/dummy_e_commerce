@@ -7,7 +7,6 @@ import '../../viewmodels/auth_cubit.dart';
 import '../../viewmodels/cart_cubit.dart';
 import '../../viewmodels/wishlist_cubit.dart';
 import '../../widgets/cart_icon_button.dart';
-import '../../theme/app_theme.dart';
 
 class ProfileScreen extends StatelessWidget {
   final bool showAppBar;

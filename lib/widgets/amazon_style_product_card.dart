@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../models/product.dart';
-import '../viewmodels/cart_cubit.dart';
 import '../viewmodels/wishlist_cubit.dart';
 import '../utils/price_formatter.dart';
 

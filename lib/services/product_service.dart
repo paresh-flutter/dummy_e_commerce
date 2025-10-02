@@ -117,7 +117,7 @@ class ProductService {
         price: 59.99,
         description: 'Comfortable wireless headphones with noise isolation.',
         category: 'Electronics',
-        rating: const Rating(rate: 4.5, count: 120),
+        rating: Rating(rate: 4.5, count: 120),
       ),
       Product(
         id: '2',
@@ -128,7 +128,7 @@ class ProductService {
         price: 129.99,
         description: 'Track fitness, notifications, and more with style.',
         category: 'Electronics',
-        rating: const Rating(rate: 4.8, count: 89),
+        rating: Rating(rate: 4.8, count: 89),
       ),
       Product(
         id: '3',
@@ -139,7 +139,7 @@ class ProductService {
         price: 39.99,
         description: 'Portable speaker with deep bass and long battery life.',
         category: 'Electronics',
-        rating: const Rating(rate: 4.2, count: 156),
+        rating: Rating(rate: 4.2, count: 156),
       ),
       Product(
         id: '4',

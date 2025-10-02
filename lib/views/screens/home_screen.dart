@@ -1,4 +1,3 @@
-import 'package:dummy_e_commerce/models/product.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -70,18 +69,13 @@ class _HomeScreenState extends State<HomeScreen> {
           SizedBox(width: 8.w),
         ],
       ) : null,
-      body: Column(
-        children: [
-          // Modern Search Bar
-          Container(
-            color: Colors.white,
-            padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 16.h),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.grey.shade100,
-                borderRadius: BorderRadius.circular(8.r),
-                border: Border.all(color: Colors.grey.shade300, width: 1.w),
-              ),
+      body: SafeArea(
+        child: Column(
+          children: [
+            // Modern Search Bar
+            Container(
+              color: Colors.white,
+              padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 16.h),
               child: TextField(
                 controller: _searchController,
                 decoration: InputDecoration(
@@ -120,223 +114,223 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               ),
             ),
-          ),
 
-          // Modern Category Filters
-          Container(
-            color: Colors.white,
-            padding: EdgeInsets.symmetric(vertical: 12.h),
-            child: BlocBuilder<ProductCubit, ProductState>(
-              builder: (context, state) {
-                final currentCategory = state is ProductLoaded ? state.currentCategory : 'All';
+            // Modern Category Filters
+            Container(
+              color: Colors.white,
+              padding: EdgeInsets.symmetric(vertical: 12.h),
+              child: BlocBuilder<ProductCubit, ProductState>(
+                builder: (context, state) {
+                  final currentCategory = state is ProductLoaded ? state.currentCategory : 'All';
 
-                return FutureBuilder<List<String>>(
-                  future: context.read<ProductCubit>().getCategories(),
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
+                  return FutureBuilder<List<String>>(
+                    future: context.read<ProductCubit>().getCategories(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return SizedBox(
+                          height: 40.h,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            padding: EdgeInsets.symmetric(horizontal: 16.w),
+                            itemCount: 5,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: EdgeInsets.only(right: 8.w),
+                                child: EnhancedLoadingStates.skeleton(
+                                  width: 80,
+                                  height: 32,
+                                  borderRadius: BorderRadius.circular(20.r),
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      }
+
+                      final categories = snapshot.data!;
                       return SizedBox(
                         height: 40.h,
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
                           padding: EdgeInsets.symmetric(horizontal: 16.w),
-                          itemCount: 5,
+                          itemCount: categories.length,
                           itemBuilder: (context, index) {
+                            final category = categories[index];
+                            final isSelected = category == currentCategory;
+
                             return Padding(
                               padding: EdgeInsets.only(right: 8.w),
-                              child: EnhancedLoadingStates.skeleton(
-                                width: 80,
-                                height: 32,
+                              child: AnimatedButton(
+                                text: category,
+                                onPressed: () {
+                                  context.read<ProductCubit>().filterByCategory(category);
+                                },
+                                style: isSelected
+                                    ? AnimatedButtonStyle.filled
+                                    : AnimatedButtonStyle.outlined,
+                                backgroundColor: isSelected
+                                    ? Colors.blue.shade600
+                                    : Colors.white,
+                                foregroundColor: isSelected
+                                    ? Colors.white
+                                    : Colors.grey.shade700,
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 16.w,
+                                  vertical: 8.h,
+                                ),
                                 borderRadius: BorderRadius.circular(20.r),
+                                minimumSize: Size(0, 32.h),
                               ),
                             );
                           },
                         ),
                       );
-                    }
-
-                    final categories = snapshot.data!;
-                    return SizedBox(
-                      height: 40.h,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        padding: EdgeInsets.symmetric(horizontal: 16.w),
-                        itemCount: categories.length,
-                        itemBuilder: (context, index) {
-                          final category = categories[index];
-                          final isSelected = category == currentCategory;
-
-                          return Padding(
-                            padding: EdgeInsets.only(right: 8.w),
-                            child: AnimatedButton(
-                              text: category,
-                              onPressed: () {
-                                context.read<ProductCubit>().filterByCategory(category);
-                              },
-                              style: isSelected 
-                                  ? AnimatedButtonStyle.filled 
-                                  : AnimatedButtonStyle.outlined,
-                              backgroundColor: isSelected 
-                                  ? Colors.blue.shade600 
-                                  : Colors.white,
-                              foregroundColor: isSelected 
-                                  ? Colors.white 
-                                  : Colors.grey.shade700,
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 16.w,
-                                vertical: 8.h,
-                              ),
-                              borderRadius: BorderRadius.circular(20.r),
-                              minimumSize: Size(0, 32.h),
-                            ),
-                          );
-                        },
-                      ),
-                    );
-                  },
-                );
-              },
+                    },
+                  );
+                },
+              ),
             ),
-          ),
 
-          // Product Grid Section
-          Expanded(
-            child: AnimatedPageWrapper(
-              child: Container(
-                color: Colors.grey.shade50,
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(12.w, 16.h, 12.w, 0),
-                  child: BlocBuilder<ProductCubit, ProductState>(
-                    builder: (context, state) {
-                      if (state is ProductLoading) {
-                        // Calculate responsive grid layout for loading state
-                        final screenWidth = 1.sw;
-                        final isTablet = screenWidth > 600;
-                        final crossAxisCount = isTablet ? 3 : 2;
-                        // CHANGED: Reduced aspect ratio to give more height
-                        final childAspectRatio = isTablet ? 0.65 : 0.58;
+            // Product Grid Section
+            Expanded(
+              child: AnimatedPageWrapper(
+                child: Container(
+                  color: Colors.grey.shade50,
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(12.w, 16.h, 12.w, 0),
+                    child: BlocBuilder<ProductCubit, ProductState>(
+                      builder: (context, state) {
+                        if (state is ProductLoading) {
+                          // Calculate responsive grid layout for loading state
+                          final screenWidth = 1.sw;
+                          final isTablet = screenWidth > 600;
+                          final crossAxisCount = isTablet ? 3 : 2;
+                          // CHANGED: Reduced aspect ratio to give more height
+                          final childAspectRatio = isTablet ? 0.65 : 0.58;
 
-                        return GridView.builder(
-                          padding: EdgeInsets.all(8.w),
-                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: crossAxisCount,
-                            mainAxisSpacing: 12.h,
-                            crossAxisSpacing: 12.w,
-                            childAspectRatio: childAspectRatio,
-                          ),
-                          itemCount: 6,
-                          itemBuilder: (context, index) {
-                            return const ShimmerProductCard();
-                          },
-                        );
-                      }
+                          return GridView.builder(
+                            padding: EdgeInsets.all(8.w),
+                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: crossAxisCount,
+                              mainAxisSpacing: 12.h,
+                              crossAxisSpacing: 12.w,
+                              childAspectRatio: childAspectRatio,
+                            ),
+                            itemCount: 6,
+                            itemBuilder: (context, index) {
+                              return const ShimmerProductCard();
+                            },
+                          );
+                        }
 
-                      if (state is ProductLoaded) {
-                        final products = state.products;
+                        if (state is ProductLoaded) {
+                          final products = state.products;
 
-                        if (products.isEmpty) {
+                          if (products.isEmpty) {
+                            return Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.search_off,
+                                    size: 64.sp,
+                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                  ),
+                                  SizedBox(height: 16.h),
+                                  Text(
+                                    'No products found',
+                                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                      fontSize: 16.sp,
+                                    ),
+                                  ),
+                                  SizedBox(height: 8.h),
+                                  Text(
+                                    'Try adjusting your search or category filter',
+                                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                      fontSize: 14.sp,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
+
+                          // Calculate responsive grid layout for products
+                          final screenWidth = 1.sw;
+                          final isTablet = screenWidth > 600;
+                          final crossAxisCount = isTablet ? 3 : 2;
+                          // CHANGED: Reduced aspect ratio to give more height
+                          final childAspectRatio = isTablet ? 0.65 : 0.58;
+
+                          return GridView.builder(
+                            padding: EdgeInsets.all(8.w),
+                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: crossAxisCount,
+                              mainAxisSpacing: 12.h,
+                              crossAxisSpacing: 12.w,
+                              childAspectRatio: childAspectRatio,
+                            ),
+                            itemCount: products.length,
+                            itemBuilder: (context, index) {
+                              final product = products[index];
+                              return AmazonStyleProductCard(product: product);
+                            },
+                          );
+                        }
+                        if (state is ProductError) {
                           return Center(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Icon(
-                                  Icons.search_off,
+                                  Icons.error_outline,
                                   size: 64.sp,
-                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                  color: Theme.of(context).colorScheme.error,
                                 ),
                                 SizedBox(height: 16.h),
                                 Text(
-                                  'No products found',
+                                  'Failed to load products',
                                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                    color: Theme.of(context).colorScheme.error,
                                     fontSize: 16.sp,
                                   ),
                                 ),
                                 SizedBox(height: 8.h),
                                 Text(
-                                  'Try adjusting your search or category filter',
+                                  state.message,
                                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                                     fontSize: 14.sp,
                                   ),
                                   textAlign: TextAlign.center,
                                 ),
+                                SizedBox(height: 16.h),
+                                AnimatedButton(
+                                  text: 'Retry',
+                                  icon: const Icon(Icons.refresh),
+                                  onPressed: () {
+                                    context.read<ProductCubit>().loadProducts();
+                                  },
+                                  style: AnimatedButtonStyle.filled,
+                                  backgroundColor: Theme.of(context).primaryColor,
+                                  foregroundColor: Colors.white,
+                                ),
                               ],
                             ),
                           );
                         }
-
-                        // Calculate responsive grid layout for products
-                        final screenWidth = 1.sw;
-                        final isTablet = screenWidth > 600;
-                        final crossAxisCount = isTablet ? 3 : 2;
-                        // CHANGED: Reduced aspect ratio to give more height
-                        final childAspectRatio = isTablet ? 0.65 : 0.58;
-
-                        return GridView.builder(
-                          padding: EdgeInsets.all(8.w),
-                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: crossAxisCount,
-                            mainAxisSpacing: 12.h,
-                            crossAxisSpacing: 12.w,
-                            childAspectRatio: childAspectRatio,
-                          ),
-                          itemCount: products.length,
-                          itemBuilder: (context, index) {
-                            final product = products[index];
-                            return AmazonStyleProductCard(product: product);
-                          },
-                        );
-                      }
-                      if (state is ProductError) {
-                        return Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.error_outline,
-                                size: 64.sp,
-                                color: Theme.of(context).colorScheme.error,
-                              ),
-                              SizedBox(height: 16.h),
-                              Text(
-                                'Failed to load products',
-                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  color: Theme.of(context).colorScheme.error,
-                                  fontSize: 16.sp,
-                                ),
-                              ),
-                              SizedBox(height: 8.h),
-                              Text(
-                                state.message,
-                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                                  fontSize: 14.sp,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                              SizedBox(height: 16.h),
-                              AnimatedButton(
-                                text: 'Retry',
-                                icon: const Icon(Icons.refresh),
-                                onPressed: () {
-                                  context.read<ProductCubit>().loadProducts();
-                                },
-                                style: AnimatedButtonStyle.filled,
-                                backgroundColor: Theme.of(context).primaryColor,
-                                foregroundColor: Colors.white,
-                              ),
-                            ],
-                          ),
-                        );
-                      }
-                      return const SizedBox.shrink();
-                    },
+                        return const SizedBox.shrink();
+                      },
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

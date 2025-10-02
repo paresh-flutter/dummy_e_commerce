@@ -4,10 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../viewmodels/wishlist_cubit.dart';
-import '../../viewmodels/cart_cubit.dart';
 import '../../widgets/cart_icon_button.dart';
 import '../../widgets/amazon_style_product_card.dart';
-import '../../theme/app_theme.dart';
 
 class WishlistScreen extends StatelessWidget {
   final bool showAppBar;

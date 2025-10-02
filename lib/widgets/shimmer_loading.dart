@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../theme/app_theme.dart';
 
 class ShimmerLoading extends StatefulWidget {
@@ -139,9 +140,10 @@ class ShimmerProductCard extends StatelessWidget {
               child: LayoutBuilder(
                 builder: (context, constraints) {
                   return Padding(
-                    padding: EdgeInsets.all(AppSpacing.md),
+                    padding: EdgeInsets.only(left: 12.w, right: 12.w),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         // Category placeholder
                         Container(
