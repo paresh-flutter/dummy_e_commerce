@@ -15,6 +15,8 @@ import '../views/screens/orders_screen.dart';
 import '../views/screens/product_detail_screen.dart';
 import '../views/screens/register_screen.dart';
 import '../views/screens/splash_screen.dart';
+import '../views/screens/address_screen.dart';
+import '../views/screens/order_detail_screen.dart';
 
 class AppRouter {
   static final AppRouter _instance = AppRouter._internal();
@@ -137,6 +139,19 @@ class AppRouter {
           path: '/orders',
           name: 'orders',
           builder: (context, state) => const OrdersScreen(),
+        ),
+        GoRoute(
+          path: '/addresses',
+          name: 'addresses',
+          builder: (context, state) => const AddressScreen(),
+        ),
+        GoRoute(
+          path: '/order/:orderId',
+          name: 'order_detail',
+          builder: (context, state) {
+            final orderId = state.pathParameters['orderId']!;
+            return OrderDetailScreen(orderId: orderId);
+          },
         ),
       ],
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import '../models/product.dart';
 import '../viewmodels/cart_cubit.dart';
@@ -96,6 +97,7 @@ class _ModernProductCardState extends State<ModernProductCard>
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   // Product Image with Wishlist Button
                   Expanded(
@@ -242,103 +244,112 @@ class _ModernProductCardState extends State<ModernProductCard>
                   ),
 
                   // Product Details
-                  Expanded(
-                    flex: 2,
-                    child: Padding(
-                      padding: EdgeInsets.all(AppSpacing.md),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Category
-                          Text(
-                            widget.product.category.toUpperCase(),
-                            style: theme.textTheme.labelSmall?.copyWith(
-                              color: colorScheme.primary,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.5,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+                  Padding(
+                    padding: EdgeInsets.all(AppSpacing.md),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Category
+                        Text(
+                          widget.product.category.toUpperCase(),
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            color: colorScheme.primary,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 0.5,
                           ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
 
-                          AppSpacing.xs.verticalSpace,
+                        SizedBox(height: AppSpacing.xs),
 
-                          // Product Title
-                          Text(
-                            widget.product.title,
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.w600,
-                              height: 1.3,
-                            ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
+                        // Product Title
+                        Text(
+                          widget.product.title,
+                          style: theme.textTheme.titleSmall?.copyWith(
+                            fontWeight: FontWeight.w600,
+                            height: 1.2,
                           ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
 
-                          const Spacer(),
+                        SizedBox(height: AppSpacing.sm),
 
-                          // Rating and Price Row
-                          Row(
-                            children: [
-                              // Rating
-                              if (widget.product.rating != null) ...[
-                                Icon(
-                                  Icons.star,
-                                  size: 14,
-                                  color: AppTheme.warningColor,
-                                ),
-                                AppSpacing.xs.horizontalSpace,
-                                Text(
-                                  widget.product.rating!.rate.toStringAsFixed(1),
-                                  style: theme.textTheme.labelSmall?.copyWith(
-                                    color: colorScheme.onSurfaceVariant,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                const Spacer(),
-                              ],
-
-                              // Price
+                        // Rating and Price Row
+                        Row(
+                          children: [
+                            // Rating
+                            if (widget.product.rating != null) ...[
+                              Icon(
+                                Icons.star,
+                                size: 12,
+                                color: AppTheme.warningColor,
+                              ),
+                              SizedBox(width: AppSpacing.xs),
                               Text(
-                                PriceFormatter.format(widget.product.price),
-                                style: theme.textTheme.titleMedium?.copyWith(
-                                  color: colorScheme.primary,
-                                  fontWeight: FontWeight.w700,
+                                widget.product.rating!.rate.toStringAsFixed(1),
+                                style: theme.textTheme.labelSmall?.copyWith(
+                                  color: colorScheme.onSurfaceVariant,
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
+                              const Spacer(),
                             ],
-                          ),
 
-                          AppSpacing.sm.verticalSpace,
+                            // Price
+                            Text(
+                              PriceFormatter.format(widget.product.price),
+                              style: theme.textTheme.titleSmall?.copyWith(
+                                color: colorScheme.primary,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
+                        ),
 
-                          // Add to Cart Button
-                          SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton.icon(
-                              onPressed: () {
-                                context.read<CartCubit>().add(widget.product);
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text('${widget.product.title} added to cart'),
-                                    duration: const Duration(seconds: 2),
-                                    behavior: SnackBarBehavior.floating,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(AppBorderRadius.sm),
-                                    ),
+                        SizedBox(height: AppSpacing.sm),
+
+                        // Add to Cart Button
+                        SizedBox(
+                          width: double.infinity,
+                          height: 32,
+                          child: ElevatedButton.icon(
+                            onPressed: () {
+                              context.read<CartCubit>().add(widget.product);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('${widget.product.title} added to cart'),
+                                  duration: const Duration(seconds: 2),
+                                  behavior: SnackBarBehavior.floating,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(AppBorderRadius.sm),
                                   ),
-                                );
-                              },
-                              icon: const Icon(Icons.add_shopping_cart, size: 16),
-                              label: const Text('Add to Cart'),
-                              style: ElevatedButton.styleFrom(
-                                padding: EdgeInsets.symmetric(vertical: AppSpacing.sm),
-                                textStyle: theme.textTheme.labelMedium?.copyWith(
-                                  fontWeight: FontWeight.w600,
                                 ),
+                              );
+                            },
+                            icon: Icon(Icons.add_shopping_cart, size: 14.sp),
+                            label: Text(
+                              'Add to Cart',
+                              style: TextStyle(
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.orange.shade500,
+                              foregroundColor: Colors.white,
+                              elevation: 0,
+                              shadowColor: Colors.transparent,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: AppSpacing.sm,
+                                vertical: 4,
                               ),
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ],

@@ -93,8 +93,34 @@ class CartScreen extends StatelessWidget {
                 ),
               ),
               
-              // Cart Summary and Checkout
-              _buildCartSummary(context, total, itemCount),
+              // Simple Checkout Button
+              Container(
+                color: Colors.white,
+                padding: EdgeInsets.all(20.w),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: () => context.push('/checkout'),
+                    icon: Icon(Icons.shopping_bag_outlined, size: 20.sp),
+                    label: Text(
+                      'Proceed to Checkout',
+                      style: TextStyle(
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: colorScheme.primary,
+                      foregroundColor: Colors.white,
+                      padding: EdgeInsets.symmetric(vertical: 18.h),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.r),
+                      ),
+                      elevation: 2,
+                    ),
+                  ),
+                ),
+              ),
             ],
           );
         },
@@ -105,7 +131,7 @@ class CartScreen extends StatelessWidget {
   Widget _buildEmptyCart(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    
+
     return Center(
       child: Padding(
         padding: EdgeInsets.all(32.w),
@@ -174,7 +200,7 @@ class CartScreen extends StatelessWidget {
   Widget _buildCartItem(BuildContext context, CartItem item) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -213,9 +239,9 @@ class CartScreen extends StatelessWidget {
                 },
               ),
             ),
-            
+
             SizedBox(width: 16.w),
-            
+
             // Product Details
             Expanded(
               child: Column(
@@ -344,130 +370,6 @@ class CartScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCartSummary(BuildContext context, double total, int itemCount) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 16.r,
-            offset: Offset(0, -4.h),
-          ),
-        ],
-      ),
-      child: Padding(
-        padding: EdgeInsets.all(20.w),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Order Summary
-            Container(
-              padding: EdgeInsets.all(16.w),
-              decoration: BoxDecoration(
-                color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
-                borderRadius: BorderRadius.circular(12.r),
-              ),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Subtotal ($itemCount items)',
-                        style: theme.textTheme.bodyLarge?.copyWith(
-                          fontSize: 16.sp,
-                        ),
-                      ),
-                      Text(
-                        PriceFormatter.format(total),
-                        style: theme.textTheme.bodyLarge?.copyWith(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16.sp,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 8.h),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Shipping',
-                        style: theme.textTheme.bodyLarge?.copyWith(
-                          fontSize: 16.sp,
-                        ),
-                      ),
-                      Text(
-                        'FREE',
-                        style: theme.textTheme.bodyLarge?.copyWith(
-                          color: Colors.green.shade600,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16.sp,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Divider(height: 24.h),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Total',
-                        style: theme.textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 20.sp,
-                        ),
-                      ),
-                      Text(
-                        PriceFormatter.format(total),
-                        style: theme.textTheme.titleLarge?.copyWith(
-                          color: colorScheme.primary,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 20.sp,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            
-            SizedBox(height: 20.h),
-            
-            // Checkout Button
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: () => context.push('/checkout'),
-                icon: Icon(Icons.shopping_bag_outlined, size: 20.sp),
-                label: Text(
-                  'Proceed to Checkout',
-                  style: TextStyle(
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: colorScheme.primary,
-                  foregroundColor: Colors.white,
-                  padding: EdgeInsets.symmetric(vertical: 18.h),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.r),
-                  ),
-                  elevation: 2,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   void _showRemoveItemDialog(BuildContext context, CartItem item) {
     showDialog(

@@ -190,24 +190,6 @@ class WishlistScreen extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 16.h),
-            OutlinedButton.icon(
-              onPressed: () => context.go('/home'),
-              icon: Icon(Icons.explore_outlined, size: 20.sp),
-              label: Text(
-                'Browse Categories',
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              style: OutlinedButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: 16.h),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-              ),
-            ),
           ],
         ),
       ),

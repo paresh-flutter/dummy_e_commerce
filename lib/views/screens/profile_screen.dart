@@ -1,3 +1,6 @@
+import 'package:dummy_e_commerce/models/order.dart';
+import 'package:dummy_e_commerce/viewmodels/order_cubit.dart';
+import 'package:dummy_e_commerce/viewmodels/address_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -130,22 +133,22 @@ class ProfileScreen extends StatelessWidget {
                               () => context.push('/orders'),
                               Colors.blue,
                             ),
-                            _buildMenuItem(
-                              context,
-                              Icons.favorite_outline,
-                              'Wishlist',
-                              'Your saved products',
-                              () => context.push('/wishlist'),
-                              Colors.red,
-                            ),
-                            _buildMenuItem(
-                              context,
-                              Icons.shopping_cart_outlined,
-                              'Shopping Cart',
-                              'Items ready to checkout',
-                              () => context.push('/cart'),
-                              Colors.orange,
-                            ),
+                            // _buildMenuItem(
+                            //   context,
+                            //   Icons.favorite_outline,
+                            //   'Wishlist',
+                            //   'Your saved products',
+                            //   () => context.push('/wishlist'),
+                            //   Colors.red,
+                            // ),
+                            // _buildMenuItem(
+                            //   context,
+                            //   Icons.shopping_cart_outlined,
+                            //   'Shopping Cart',
+                            //   'Items ready to checkout',
+                            //   () => context.push('/cart'),
+                            //   Colors.orange,
+                            // ),
                           ],
                         ),
                         
@@ -162,6 +165,14 @@ class ProfileScreen extends StatelessWidget {
                               'Update your information',
                               () => _showComingSoon(context),
                               Colors.purple,
+                            ),
+                            _buildMenuItem(
+                              context,
+                              Icons.location_on_outlined,
+                              'My Addresses',
+                              'Manage delivery addresses',
+                              () => context.push('/addresses'),
+                              Colors.teal,
                             ),
                             _buildMenuItem(
                               context,
@@ -301,6 +312,12 @@ class ProfileScreen extends StatelessWidget {
   }
 
   Widget _buildUserStats(BuildContext context) {
+    return BlocBuilder<OrderCubit, OrderState>(
+  builder: (context, state) {
+    int orderCount = 0;
+    if (state is OrdersLoaded) {
+      orderCount = state.orders.length;
+    }
     return BlocBuilder<CartCubit, CartState>(
       builder: (context, cartState) {
         final cartCount = context.read<CartCubit>().itemCount;
@@ -311,7 +328,7 @@ class ProfileScreen extends StatelessWidget {
             return Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _buildStatItem('Orders', '12', Icons.shopping_bag_outlined),
+                _buildStatItem('Orders', '$orderCount', Icons.shopping_bag_outlined),
                 _buildStatItem('Cart', '$cartCount', Icons.shopping_cart_outlined),
                 _buildStatItem('Wishlist', '$wishlistCount', Icons.favorite_outline),
               ],
@@ -320,6 +337,8 @@ class ProfileScreen extends StatelessWidget {
         );
       },
     );
+  },
+);
   }
 
   Widget _buildStatItem(String label, String value, IconData icon) {

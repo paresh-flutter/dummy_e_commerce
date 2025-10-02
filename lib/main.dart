@@ -16,6 +16,7 @@ import 'viewmodels/cart_cubit.dart';
 import 'viewmodels/auth_cubit.dart';
 import 'viewmodels/wishlist_cubit.dart';
 import 'viewmodels/order_cubit.dart';
+import 'viewmodels/address_cubit.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -65,6 +66,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<OrderCubit>(
           create: (context) => OrderCubit(orderRepository),
+        ),
+        BlocProvider<AddressCubit>(
+          create: (context) => AddressCubit(),
         ),
       ],
       child: ScreenUtilInit(

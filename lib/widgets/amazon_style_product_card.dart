@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../models/product.dart';
 import '../viewmodels/wishlist_cubit.dart';
+import '../viewmodels/cart_cubit.dart';
 import '../utils/price_formatter.dart';
 
 class AmazonStyleProductCard extends StatefulWidget {
@@ -378,6 +379,73 @@ class _AmazonStyleProductCardState extends State<AmazonStyleProductCard>
                               ),
                             ],
                           ),
+
+                          SizedBox(height: 8.h),
+
+                          // Add to Cart Button
+                          SizedBox(
+                            width: double.infinity,
+                            height: 36.h,
+                            child: BlocBuilder<CartCubit, CartState>(
+                              builder: (context, cartState) {
+                                final isInCart = cartState.items.containsKey(widget.product.id);
+                                final quantity = cartState.items[widget.product.id]?.quantity ?? 0;
+                                
+                                return ElevatedButton(
+                                  onPressed: () {
+                                    context.read<CartCubit>().add(widget.product);
+                                    
+                                    // Show feedback snackbar
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          'Added ${widget.product.name} to cart',
+                                          style: TextStyle(fontSize: 14.sp),
+                                        ),
+                                        duration: const Duration(seconds: 2),
+                                        backgroundColor: Colors.green.shade600,
+                                        behavior: SnackBarBehavior.floating,
+                                        margin: EdgeInsets.all(16.w),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(8.r),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: isInCart 
+                                        ? Colors.orange.shade600 
+                                        : Colors.orange.shade500,
+                                    foregroundColor: Colors.white,
+                                    elevation: 0,
+                                    shadowColor: Colors.transparent,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(6.r),
+                                    ),
+                                    padding: EdgeInsets.symmetric(vertical: 8.h),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        isInCart ? Icons.shopping_cart : Icons.add_shopping_cart,
+                                        size: 16.sp,
+                                      ),
+                                      SizedBox(width: 6.w),
+                                      Text(
+                                        isInCart ? 'In Cart ($quantity)' : 'Add to Cart',
+                                        style: TextStyle(
+                                          fontSize: 12.sp,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                          SizedBox(height: 8.h),
 
                         ],
                       ),
