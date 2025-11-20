@@ -46,6 +46,9 @@ class UserModel extends Equatable {
   // Check if user is not empty
   bool get isNotEmpty => this != UserModel.empty;
 
+  // Check if user is a guest (anonymous user)
+  bool get isGuest => email.isEmpty || email == '';
+
   // Get primary address
   Address? get primaryAddress {
     try {

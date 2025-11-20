@@ -114,6 +114,23 @@ class AuthenticationService {
     }
   }
 
+  /// Sign in as guest user
+  Future<app_models.UserModel> loginAsGuest() async {
+    try {
+      final userCredential = await _firebaseAuth.signInAnonymously();
+      
+      if (userCredential.user == null) {
+        throw Exception('Failed to sign in as guest');
+      }
+      
+      return _userFromFirebaseUser(userCredential.user!);
+    } on FirebaseAuthException catch (e) {
+      throw _handleFirebaseAuthException(e);
+    } catch (e) {
+      throw Exception('Guest login failed: $e');
+    }
+  }
+
   // Convert Firebase User to our User model
   app_models.UserModel _userFromFirebaseUser(User user) {
     return app_models.UserModel(

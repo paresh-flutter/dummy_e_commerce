@@ -78,6 +78,18 @@ class AuthCubit extends Cubit<AuthState> {
       emit(AuthError('Logout failed: ${e.toString()}'));
     }
   }
+
+  // Login as guest
+  Future<void> loginAsGuest() async {
+    emit(AuthLoading());
+    try {
+      final user = await _authService.loginAsGuest();
+      emit(AuthAuthenticated(user));
+      print('AuthCubit: Guest login successful, user ID: ${user.id}');
+    } catch (e) {
+      emit(AuthError('Guest login failed: ${e.toString().replaceAll('Exception: ', '')}'));
+    }
+  }
   
   // Check if user is authenticated
   bool get isAuthenticated => state is AuthAuthenticated;

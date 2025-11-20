@@ -171,29 +171,29 @@ class CartScreen extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 32.h),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: () => context.go('/home'),
-                icon: Icon(Icons.shopping_bag_outlined, size: 20.sp),
-                label: Text(
-                  'Start Shopping',
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: colorScheme.primary,
-                  foregroundColor: Theme.of(context).colorScheme.surface,
-                  padding: EdgeInsets.symmetric(vertical: 16.h),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.r),
-                  ),
-                ),
-              ),
-            ),
+            // SizedBox(height: 32.h),
+            // SizedBox(
+            //   width: double.infinity,
+            //   child: ElevatedButton.icon(
+            //     onPressed: () => context.go('/home'),
+            //     icon: Icon(Icons.shopping_bag_outlined, size: 20.sp),
+            //     label: Text(
+            //       'Start Shopping',
+            //       style: TextStyle(
+            //         fontSize: 16.sp,
+            //         fontWeight: FontWeight.w600,
+            //       ),
+            //     ),
+            //     style: ElevatedButton.styleFrom(
+            //       backgroundColor: colorScheme.primary,
+            //       foregroundColor: Theme.of(context).colorScheme.surface,
+            //       padding: EdgeInsets.symmetric(vertical: 16.h),
+            //       shape: RoundedRectangleBorder(
+            //         borderRadius: BorderRadius.circular(12.r),
+            //       ),
+            //     ),
+            //   ),
+            // ),
           ],
         ),
       ),
@@ -441,3 +441,4 @@ class CartScreen extends StatelessWidget {
     );
   }
 }
+

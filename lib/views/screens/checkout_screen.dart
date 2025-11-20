@@ -263,6 +263,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   Expanded(
                     child: PageView(
                       controller: _pageController,
+                      physics: NeverScrollableScrollPhysics(),
                       onPageChanged: (index) {
                         setState(() {
                           _currentStep = index;
@@ -1893,7 +1894,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           Row(
             children: [
               Expanded(
-                flex: 2,
                 child: TextFormField(
                   controller: _cityController,
                   decoration: InputDecoration(
@@ -1925,6 +1925,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   decoration: InputDecoration(
                     labelText: 'State *',
                     hintText: 'State',
+                    prefixIcon: Icon(Icons.location_city, size: 20.sp),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8.r),
                     ),
@@ -1979,7 +1980,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               ),
               SizedBox(width: 12.w),
               Expanded(
-                flex: 2,
+                flex: 1,
                 child: TextFormField(
                   controller: _countryController,
                   decoration: InputDecoration(

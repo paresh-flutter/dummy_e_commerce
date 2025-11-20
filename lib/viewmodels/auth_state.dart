@@ -13,6 +13,8 @@ class AuthInitial extends AuthState {}
 /// Authentication is in progress (loading)
 class AuthLoading extends AuthState {}
 
+class AuthGuestLoginRequested extends AuthState {}
+
 /// User is successfully authenticated
 class AuthAuthenticated extends AuthState {
   final UserModel user;

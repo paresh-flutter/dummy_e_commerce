@@ -424,59 +424,53 @@ class HelpSupportScreen extends StatelessWidget {
     
     showModalBottomSheet(
       context: context,
-      isScrollControlled: true,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
       ),
-      builder: (context) => DraggableScrollableSheet(
-        initialChildSize: 0.7,
-        maxChildSize: 0.9,
-        minChildSize: 0.5,
-        builder: (context, scrollController) => Container(
-          padding: EdgeInsets.all(20.w),
-          child: Column(
-            children: [
-              Text(
-                category,
-                style: TextStyle(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.w700,
-                ),
+      builder: (context) => Container(
+        padding: EdgeInsets.all(20.w),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              category,
+              style: TextStyle(
+                fontSize: 18.sp,
+                fontWeight: FontWeight.w700,
               ),
-              SizedBox(height: 20.h),
-              Expanded(
-                child: ListView.builder(
-                  controller: scrollController,
-                  itemCount: faqs.length,
-                  itemBuilder: (context, index) {
-                    final faq = faqs[index];
-                    return ExpansionTile(
-                      title: Text(
-                        faq['question']!,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14.sp,
-                        ),
+            ),
+            SizedBox(height: 20.h),
+            Expanded(
+              child: ListView.builder(
+                itemCount: faqs.length,
+                itemBuilder: (context, index) {
+                  final faq = faqs[index];
+                  return ExpansionTile(
+                    title: Text(
+                      faq['question']!,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14.sp,
                       ),
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.all(16.w),
-                          child: Text(
-                            faq['answer']!,
-                            style: TextStyle(
-                              fontSize: 14.sp,
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
-                              height: 1.4,
-                            ),
+                    ),
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(16.w),
+                        child: Text(
+                          faq['answer']!,
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            height: 1.4,
                           ),
                         ),
-                      ],
-                    );
-                  },
-                ),
+                      ),
+                    ],
+                  );
+                },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

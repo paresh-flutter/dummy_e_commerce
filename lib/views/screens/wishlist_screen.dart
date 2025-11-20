@@ -172,29 +172,29 @@ class WishlistScreen extends StatelessWidget {
                 ),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 32.h),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  onPressed: () => context.go('/home'),
-                  icon: Icon(Icons.shopping_bag_outlined, size: 20.sp),
-                  label: Text(
-                    'Discover Products',
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: colorScheme.primary,
-                    foregroundColor: colorScheme.onPrimary,
-                    padding: EdgeInsets.symmetric(vertical: 16.h),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12.r),
-                    ),
-                  ),
-                ),
-              ),
+              // SizedBox(height: 32.h),
+              // SizedBox(
+              //   width: double.infinity,
+              //   child: ElevatedButton.icon(
+              //     onPressed: () => context.go('/home'),
+              //     icon: Icon(Icons.shopping_bag_outlined, size: 20.sp),
+              //     label: Text(
+              //       'Discover Products',
+              //       style: TextStyle(
+              //         fontSize: 16.sp,
+              //         fontWeight: FontWeight.w600,
+              //       ),
+              //     ),
+              //     style: ElevatedButton.styleFrom(
+              //       backgroundColor: colorScheme.primary,
+              //       foregroundColor: colorScheme.onPrimary,
+              //       padding: EdgeInsets.symmetric(vertical: 16.h),
+              //       shape: RoundedRectangleBorder(
+              //         borderRadius: BorderRadius.circular(12.r),
+              //       ),
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         ),

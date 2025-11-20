@@ -2,7 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../viewmodels/theme_cubit.dart';
+import '../../viewmodels/auth_cubit.dart';
+import '../../services/authentication_service.dart';
+import '../../services/firestore_user_service.dart';
+import '../../services/firestore_cart_service.dart';
+import '../../services/firestore_wishlist_service.dart';
+import '../../services/user_data_manager.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -16,9 +23,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
   bool _autoBackup = true;
   String _selectedLanguage = 'English';
   String _selectedCurrency = 'USD';
+  bool _isDeleting = false;
 
   final List<String> _languages = ['English', 'Spanish', 'French', 'German', 'Italian'];
   final List<String> _currencies = ['USD', 'EUR', 'GBP', 'JPY', 'CAD'];
+  
+  // Services
+  final AuthenticationService _authService = AuthenticationService();
+  final FirestoreUserService _userService = FirestoreUserService();
+  final FirestoreCartService _cartService = FirestoreCartService();
+  final FirestoreWishlistService _wishlistService = FirestoreWishlistService();
+  final UserDataManager _userDataManager = UserDataManager();
 
   @override
   Widget build(BuildContext context) {
@@ -154,36 +169,36 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ],
               ),
         
-              SizedBox(height: 32.h),
+              // SizedBox(height: 32.h),
         
-              // Save Button
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _saveSettings,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: colorScheme.primary,
-                    foregroundColor: colorScheme.onPrimary,
-                    padding: EdgeInsets.symmetric(vertical: 16.h),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12.r),
-                    ),
-                    elevation: 0,
-                    textStyle: theme.textTheme.labelLarge?.copyWith(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  child: Text(
-                    'Save Settings',
-                    style: theme.textTheme.labelLarge?.copyWith(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w600,
-                      color: colorScheme.onPrimary,
-                    ),
-                  ),
-                ),
-              ),
+              // // Save Button
+              // SizedBox(
+              //   width: double.infinity,
+              //   child: ElevatedButton(
+              //     onPressed: _saveSettings,
+              //     style: ElevatedButton.styleFrom(
+              //       backgroundColor: colorScheme.primary,
+              //       foregroundColor: colorScheme.onPrimary,
+              //       padding: EdgeInsets.symmetric(vertical: 16.h),
+              //       shape: RoundedRectangleBorder(
+              //         borderRadius: BorderRadius.circular(12.r),
+              //       ),
+              //       elevation: 0,
+              //       textStyle: theme.textTheme.labelLarge?.copyWith(
+              //         fontSize: 16.sp,
+              //         fontWeight: FontWeight.w600,
+              //       ),
+              //     ),
+              //     child: Text(
+              //       'Save Settings',
+              //       style: theme.textTheme.labelLarge?.copyWith(
+              //         fontSize: 16.sp,
+              //         fontWeight: FontWeight.w600,
+              //         color: colorScheme.onPrimary,
+              //       ),
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         ),
@@ -646,27 +661,442 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final theme = Theme.of(context);
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Account'),
-        content: const Text('Are you sure you want to permanently delete your account? This action cannot be undone.'),
+        title: Row(
+          children: [
+            Icon(
+              Icons.warning_amber_rounded,
+              color: theme.colorScheme.error,
+              size: 24.sp,
+            ),
+            SizedBox(width: 8.w),
+            const Text('Delete Account'),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Are you sure you want to permanently delete your account?',
+              style: TextStyle(
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            SizedBox(height: 12.h),
+            Text(
+              'This will permanently delete:',
+              style: TextStyle(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w600,
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+            SizedBox(height: 8.h),
+            ...['Your profile and personal data', 'Your order history', 'Your cart and wishlist', 'All saved addresses']
+                .map((item) => Padding(
+                      padding: EdgeInsets.only(left: 16.w, bottom: 4.h),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.circle,
+                            size: 6.sp,
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                          SizedBox(width: 8.w),
+                          Expanded(
+                            child: Text(
+                              item,
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                                color: theme.colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )),
+            SizedBox(height: 16.h),
+            Container(
+              padding: EdgeInsets.all(12.w),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.errorContainer,
+                borderRadius: BorderRadius.circular(8.r),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.info_outline,
+                    color: theme.colorScheme.onErrorContainer,
+                    size: 20.sp,
+                  ),
+                  SizedBox(width: 8.w),
+                  Expanded(
+                    child: Text(
+                      'This action cannot be undone!',
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w600,
+                        color: theme.colorScheme.onErrorContainer,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: _isDeleting ? null : () => Navigator.pop(context),
             child: const Text('Cancel'),
           ),
           ElevatedButton(
-            onPressed: () {
+            onPressed: _isDeleting ? null : () {
               Navigator.pop(context);
-              _showComingSoon('Account Deletion');
+              _deleteAccount();
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: theme.colorScheme.error,
               foregroundColor: theme.colorScheme.onError,
             ),
-            child: const Text('Delete'),
+            child: _isDeleting
+                ? SizedBox(
+                    width: 16.w,
+                    height: 16.w,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        theme.colorScheme.onError,
+                      ),
+                    ),
+                  )
+                : const Text('Delete Forever'),
           ),
         ],
       ),
     );
   }
+
+  Future<void> _deleteAccount() async {
+    if (_isDeleting) return;
+
+    setState(() {
+      _isDeleting = true;
+    });
+
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        throw Exception('No user is currently signed in');
+      }
+
+      final userId = user.uid;
+      final userEmail = user.email;
+
+      // Show loading dialog
+      if (mounted) {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => AlertDialog(
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(height: 16.h),
+                Text(
+                  'Deleting your account...',
+                  style: TextStyle(fontSize: 16.sp),
+                ),
+              ],
+            ),
+          ),
+        );
+      }
+
+      // Delete user data from Firestore FIRST (before deleting Firebase user)
+      try {
+        await _cartService.clearCart(userId);
+      } catch (e) {
+        print('Warning: Failed to clear cart: $e');
+      }
+      
+      try {
+        await _wishlistService.clearWishlist(userId);
+      } catch (e) {
+        print('Warning: Failed to clear wishlist: $e');
+      }
+      
+      try {
+        await _userService.deleteUserProfile(userId);
+      } catch (e) {
+        print('Warning: Failed to delete user profile: $e');
+      }
+      
+      // Clear local data
+      try {
+        await _userDataManager.clearLocalUserData();
+      } catch (e) {
+        print('Warning: Failed to clear local data: $e');
+      }
+
+      // Now delete the Firebase user account
+      try {
+        await user.delete();
+        
+        // Close loading dialog immediately after successful deletion
+        if (mounted) {
+          Navigator.pop(context);
+        }
+        
+        // Force logout through AuthCubit to ensure proper state management
+        if (mounted) {
+          final authCubit = context.read<AuthCubit>();
+          await authCubit.logout();
+        }
+        
+        // Navigate to login screen after logout
+        if (mounted) {
+          // Use go_router to navigate to login
+          context.go('/login');
+          
+          // Show success message
+          Future.delayed(const Duration(milliseconds: 300), () {
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: const Text('Account deleted successfully'),
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+            }
+          });
+        }
+        
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'requires-recent-login') {
+          // Handle re-authentication requirement
+          if (mounted) {
+            Navigator.pop(context); // Close loading dialog
+          }
+          
+          // Show re-authentication dialog
+          final shouldReauth = await _showReauthDialog();
+          if (!shouldReauth) {
+            setState(() {
+              _isDeleting = false;
+            });
+            return;
+          }
+
+          // Show loading dialog again
+          if (mounted) {
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (context) => AlertDialog(
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CircularProgressIndicator(),
+                    SizedBox(height: 16.h),
+                    Text(
+                      'Deleting your account...',
+                      style: TextStyle(fontSize: 16.sp),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
+
+          // Try to delete again after re-authentication
+          await user.delete();
+          
+          // Close loading dialog after successful deletion
+          if (mounted) {
+            Navigator.pop(context);
+          }
+          
+          // Force logout through AuthCubit
+          if (mounted) {
+            final authCubit = context.read<AuthCubit>();
+            await authCubit.logout();
+          }
+          
+          // Navigate to login screen
+          if (mounted) {
+            context.go('/login');
+            
+            // Show success message
+            Future.delayed(const Duration(milliseconds: 300), () {
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Text('Account deleted successfully'),
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+              }
+            });
+          }
+        } else {
+          rethrow;
+        }
+      }
+    } on FirebaseAuthException catch (e) {
+      // Close loading dialog if it's open
+      if (mounted) {
+        Navigator.pop(context);
+      }
+
+      String errorMessage;
+      switch (e.code) {
+        case 'user-not-found':
+          errorMessage = 'User account not found.';
+          break;
+        case 'network-request-failed':
+          errorMessage = 'Network error. Please check your connection and try again.';
+          break;
+        default:
+          errorMessage = 'Failed to delete account: ${e.message}';
+      }
+
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Row(
+              children: [
+                Icon(
+                  Icons.error_outline,
+                  color: Theme.of(context).colorScheme.error,
+                  size: 24.sp,
+                ),
+                SizedBox(width: 8.w),
+                const Text('Deletion Failed'),
+              ],
+            ),
+            content: Text(
+              errorMessage,
+              style: TextStyle(fontSize: 14.sp),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+      }
+    } catch (e) {
+      // Close loading dialog if it's open
+      if (mounted) {
+        Navigator.pop(context);
+      }
+
+      // Show error message
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Row(
+              children: [
+                Icon(
+                  Icons.error_outline,
+                  color: Theme.of(context).colorScheme.error,
+                  size: 24.sp,
+                ),
+                SizedBox(width: 8.w),
+                const Text('Deletion Failed'),
+              ],
+            ),
+            content: Text(
+              'Failed to delete account: ${e.toString()}',
+              style: TextStyle(fontSize: 14.sp),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isDeleting = false;
+        });
+      }
+    }
+  }
+
+  Future<bool> _showReauthDialog() async {
+    return await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: Row(
+          children: [
+            Icon(
+              Icons.security_outlined,
+              color: Theme.of(context).colorScheme.primary,
+              size: 24.sp,
+            ),
+            SizedBox(width: 8.w),
+            const Text('Security Check'),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'For security reasons, we need to verify your identity before deleting your account.',
+              style: TextStyle(fontSize: 14.sp),
+            ),
+            SizedBox(height: 12.h),
+            Text(
+              'Please sign out and sign back in, then try deleting your account again.',
+              style: TextStyle(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w500,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.pop(context, true);
+              // Sign out the user
+              await FirebaseAuth.instance.signOut();
+              if (mounted) {
+                context.go('/login');
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              foregroundColor: Theme.of(context).colorScheme.onPrimary,
+            ),
+            child: const Text('Sign Out'),
+          ),
+        ],
+      ),
+    ) ?? false;
+  }
+
 }

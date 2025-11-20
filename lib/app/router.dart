@@ -103,10 +103,11 @@ class AppRouter {
               path: '/home',
               name: 'home',
               pageBuilder: (context, state) => _noTransitionPage(
-                const MainNavigationScreen(),
+                const MainNavigationScreen(initialIndex: 0),
                 'home',
               ),
             ),
+            // Direct home screen route for cart navigation
             GoRoute(
               path: '/cart',
               name: 'cart',

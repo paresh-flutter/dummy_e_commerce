@@ -34,7 +34,7 @@ class _AddEditAddressScreenState extends State<AddEditAddressScreen> {
     if (widget.address != null) {
       _populateFields(widget.address!);
     } else {
-      _countryController.text = 'United States';
+      //_countryController.text = 'United States';
     }
   }
 
@@ -70,16 +70,17 @@ class _AddEditAddressScreenState extends State<AddEditAddressScreen> {
     final colorScheme = theme.colorScheme;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      backgroundColor: theme.colorScheme.surface,
       appBar: AppBar(
         title: Text(
           widget.address == null ? 'Add Address' : 'Edit Address',
           style: TextStyle(
             fontSize: 20.sp,
             fontWeight: FontWeight.w600,
+            color: theme.colorScheme.onSurface
           ),
         ),
-        backgroundColor: Theme.of(context).colorScheme.surface,
+        backgroundColor: theme.colorScheme.surface,
         elevation: 0,
         scrolledUnderElevation: 1,
         leading: IconButton(
@@ -343,28 +344,27 @@ class _AddEditAddressScreenState extends State<AddEditAddressScreen> {
               ),
             ),
             Container(
+              color: theme.colorScheme.surface,
               padding: EdgeInsets.all(20.w),
-              decoration: BoxDecoration(
-                color: colorScheme.surface,
-                border: Border(top: BorderSide(color: colorScheme.outlineVariant)),
-              ),
-              child: SafeArea(
-                child: SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: _saveAddress,
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(vertical: 16.h),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.r),
-                      ),
+
+              child: SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: _saveAddress,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: colorScheme.primary,
+                    foregroundColor: Theme.of(context).colorScheme.surface,
+                    padding: EdgeInsets.symmetric(vertical: 18.h),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.r),
                     ),
-                    child: Text(
-                      widget.address == null ? 'Add Address' : 'Update Address',
-                      style: TextStyle(
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w600,
-                      ),
+                    elevation: 2,
+                  ),
+                  child: Text(
+                    widget.address == null ? 'Add Address' : 'Update Address',
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),

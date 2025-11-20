@@ -41,11 +41,11 @@ class OrderDetailScreen extends StatelessWidget {
           onPressed: () => context.pop(),
         ),
         actions: [
-          IconButton(
-            icon: Icon(Icons.share_outlined, size: 22.sp),
-            onPressed: () => _shareOrder(context),
-          ),
-          SizedBox(width: 4.w),
+          // IconButton(
+          //   icon: Icon(Icons.share_outlined, size: 22.sp),
+          //   onPressed: () => _shareOrder(context),
+          // ),
+          // SizedBox(width: 4.w),
         ],
       ),
       body: BlocBuilder<OrderCubit, OrderState>(
